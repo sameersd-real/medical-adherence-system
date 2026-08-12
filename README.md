@@ -22,3 +22,7 @@ design-files/
 If you're working on different parts of the UI, feel free to create separate subfolders so everything stays organized.
 
 Please make sure you **pull before starting** so you're working with the latest repo state.
+
+
+# To run go to server folder and do `node srever.js`
+## that will run index.html too and will be available on wifi network
