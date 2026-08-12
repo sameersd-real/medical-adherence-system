@@ -1,0 +1,27 @@
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .box {
+    text-align: center;
+    padding: 40px;
+    border: 2px solid #555;
+    border-radius: 20px;
+    background: #222;
+  }
+  button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  button:hover {
+    transform: scale(1.05);
+  }
