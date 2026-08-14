@@ -10,33 +10,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-  <div class="box">
-    <h1>🚀 Random Ass Website</h1>
-    <p id="message">
-      Why are you here?
-    </p>
-    <button onclick="changeMessage()">
-      Click this stupid button
-    </button>
-  </div>
-  <script>
-    const messages = [
-      "Hello, internet stranger.",
-      "You clicked it. Congratulations.",
-      "The server is probably working.",
-      "This button has no purpose.",
-      "Express.js goes brrrrr.",
-      "You have discovered the forbidden button.",
-      "Nice click.",
-      "Sameer is the best."
-    ];
-    function changeMessage() {
-      const random = Math.floor(Math.random() * messages.length);
-      document.getElementById("message").textContent = messages[random];
-    }
-  </script>
-
-
   </body>
 </html>
