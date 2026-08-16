@@ -1,6 +1,6 @@
 .alarm {
-  width: 250px;
-  max-width: 464px;
+  width: calc(100vw-20px);
+  max-width: 250px;
   height: 250px;
   box-sizing: border-box;
   padding: 16px 18px;
@@ -36,22 +36,39 @@
   padding: 8px 22px;
   border: none;
   border-radius: 20px;
-
   background: #4dbcf5;
   color: #222;
-
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
-
 .alarm > button:hover {
   background: #61c5f7;
 }
-
 /* Alarm text */
 .alarm p {
   margin-top: 14px;
   color: #bdbabd;
   font-size: 14px;
+}
+@media (max-width: 600px) {
+  body{
+        margin: 0;
+    }
+  .alarm {
+    width: calc(100vw - 20px);
+    margin: 10px;
+    aspect-ratio: 7/6;
+    height: auto;
+    max-width: none;
+  }
+  .alarm input[type="time"] {
+    width: 80%;
+  }
+    .alarm p {
+        margin-top: 14px;
+        color: #bdbabd;
+        margin-top: 20px;
+        font-size: 32px;
+    }
 }
