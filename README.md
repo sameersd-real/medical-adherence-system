@@ -26,3 +26,8 @@ Please make sure you **pull before starting** so you're working with the latest 
 
 # To run go to server folder and do `node srever.js`
 ## that will run index.html too and will be available on wifi network
+
+## some things that need to be remembered
+* bg-color : #242122;
+* alarm-bg : #302c2e;
+* button-col: #4dbcf5;
