@@ -4,8 +4,8 @@
         align-items: center;
         gap: 20px;
         border-radius: 8px;
-        background-color: #242122;
-        color: white;
+        background-color: var(--bg-color);
+        color: var(--text-color);
         padding: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         margin: 5px 0px;
@@ -23,7 +23,7 @@
         border: none;
         border-radius: 6px;
         padding: 8px 16px;
-        background-color: #4dbcf5;
+        background-color: var(--btn-color);
         color: #242122;
         font-size: 0.9rem;
         font-weight: 600;
@@ -31,7 +31,7 @@
         transition: 0.2s ease;
       }
       .details-bar button:hover {
-        background-color: #3c93bf;
+        background-color: var(--btn-hover);
       }
       .details-bar button:active {
           transform: scale(0.97);

@@ -4,9 +4,9 @@
   height: 250px;
   box-sizing: border-box;
   padding: 16px 18px;
-  background: #302c2e;
+  background: var(--alarm-bg);
   border-radius: 8px;
-  color: #f1f1f1;
+  color: var(--alarm-txt);
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
@@ -24,9 +24,9 @@
   width: 150px;
   padding: 10px 12px;
   margin-bottom: 20px;
-  background: #3a3638;
+  background: var(--input-bg);
   color: #eee;
-  border: 1px solid #514d4f;
+  border: 1px solid var(--border);
   border-radius: 6px;
   outline: none;
   font-size: 16px;
@@ -36,14 +36,14 @@
   padding: 8px 22px;
   border: none;
   border-radius: 20px;
-  background: #4dbcf5;
+  background: var(--btn-color);
   color: #222;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
 .alarm > button:hover {
-  background: #61c5f7;
+  background: var(--btn-hover);
 }
 /* Alarm text */
 .alarm p {
@@ -67,7 +67,7 @@
   }
     .alarm p {
         margin-top: 14px;
-        color: #bdbabd;
+        color: var(--alarm-txt);
         margin-top: 20px;
         font-size: 32px;
     }

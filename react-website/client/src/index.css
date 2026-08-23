@@ -1,3 +1,14 @@
+ :root {
+  --primary-color: #21c063;
+  --text-color: #white;
+  --btn-color:#4dbcf5;
+  --btn-hover:#3c93bf;
+  --bg-color : #242122;
+  --alarm-bg : #302c2e;
+  --alarm-txt:#e9e9e9;
+  --input-bg:#3a3638;
+  --border:#514d4f;
+}
   body {
     margin: 0;
     font-family: Arial, sans-serif;
