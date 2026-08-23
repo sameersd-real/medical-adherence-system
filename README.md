@@ -7,7 +7,7 @@ Hey guys, for the design work, please use the existing `design-files/` folder in
 * Put **all design-related files** inside:
   `design-files/`
 * Please organize things into subfolders if needed (e.g. `mohan/` or `/nithin/` or `yashwanth/` etc.).
-* Don't modify or delete files outside `design-files/` unless you coordinate with me first. (you won't be able to anway.)
+* Don't modify or delete files outside `design-files/` unless you coordinate with me first.
 * Commit your work with a clear commit message and send pull request through GitHub.
 
 Example structure:
