@@ -1,6 +1,6 @@
 node_modules/
-client/node_modules/
-server/node_modules/
-client/.env
-server/.env
+react-website/client/node_modules/
+react-website/server/node_modules/
+react-website/client/.env
+react-website/server/.env
 testing/
