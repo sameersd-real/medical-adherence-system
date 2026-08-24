@@ -24,8 +24,9 @@ If you're working on different parts of the UI, feel free to create separate sub
 Please make sure you **pull before starting** so you're working with the latest repo state.
 
 
-# To run go to server folder and do `node srever.js`
-## that will run index.html too and will be available on wifi network
+To run go to server folder and do `node srever.js`
+that will run index.html too and will be available on wifi network
+npm run dev -- --host 0.0.0.0 (for frontend)
 
 ## some things that need to be remembered
 * primary-col : #21c063;

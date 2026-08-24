@@ -4,11 +4,12 @@ import './App.css';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
 import Dashboard from './components/Dashboard';
+import Landing from './components/Land';
 function App() {
   return (
     <Routes>
       {/* nothing in routes is created yet properly. */}
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path='*' element={<NotFound/>}/>
