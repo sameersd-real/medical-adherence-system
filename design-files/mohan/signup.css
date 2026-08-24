@@ -1,0 +1,51 @@
+
+.one{
+    background-color:darkgreen;
+    color: white;
+    border: 7px solid black;
+    padding: 20px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.sec{
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    height: 40px;
+    width: 300px;
+    background-color: #52717A;
+
+}
+.thi{
+    position: absolute;
+    top: 37%;
+    left: 40%;
+    height: 40px;
+    width: 300px;
+    background-color: #52717A;
+}
+body{
+    background-color: #F5FAFC;
+    background-image:url("./images/image5.png");
+    background-repeat: no-repeat;
+    background-position: cover;
+    
+
+}
+
+#sing{
+    font-size: 50px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    position: absolute;
+    left: 30%;
+}
+input::placeholder{
+    font-family:'Times New Roman', Times, serif;
+    font-size: 18px;
+    color: white;
+
+}
+input{
+    color:white;
+    font-size: 15px;
+}
+
