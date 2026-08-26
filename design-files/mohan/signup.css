@@ -48,4 +48,35 @@ input{
     color:white;
     font-size: 15px;
 }
+@media (max-width:600px) {
+    body{
+        background-size: auto 100%;
+    }
 
+    .one{
+        border-width: 4px;
+        padding: 16px 14px;
+    }
+
+    #sing{
+        position: static;
+        display: block;
+        margin: 42px 20px 22px;
+        font-size: clamp(1.7rem, 8vw, 2.3rem);
+        line-height: 1.2;
+        text-align: center;
+    }
+        .sec,
+    .thi{
+        position: static;
+        display: block;
+        box-sizing: border-box;
+        width: calc(100% - 40px);
+        max-width: 380px;
+        height: 48px;
+        margin: 0 auto 16px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 8px;
+    }
+}
