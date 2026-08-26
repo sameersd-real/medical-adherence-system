@@ -31,6 +31,15 @@
   outline: none;
   font-size: 16px;
 }
+/* Tablet count */
+.tablet-count{
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  color: white;
+  padding: 5px;
+}
 /* ON/OFF button */
 .alarm > button {
   padding: 8px 22px;
