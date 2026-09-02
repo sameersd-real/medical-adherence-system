@@ -1,14 +1,30 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertCircle, ChevronRight } from "lucide-react";
 import "./missedDose.css";
 
-const missedDoses = [
-  { medicine: "Metformin", dosage: "500 mg", time: "8:00 AM", day: "Today" },
-  { medicine: "Vitamin D3", dosage: "1,000 IU", time: "9:00 PM", day: "Yesterday" },
-  { medicine: "Amlodipine", dosage: "5 mg", time: "8:00 AM", day: "Mon, Aug 31" },
-];
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+function formatDate(date) {
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" })
+    .format(new Date(`${date}T00:00:00`));
+}
+
+function formatTime(time) {
+  return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" })
+    .format(new Date(`1970-01-01T${time}:00`));
+}
 
 export default function MissedDose() {
+  const [missedDoses, setMissedDoses] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/missed-doses?limit=3`)
+      .then((response) => response.ok ? response.json() : Promise.reject())
+      .then(setMissedDoses)
+      .catch(() => setMissedDoses([]));
+  }, []);
+
   return (
     <section className="missed-dose" aria-labelledby="missed-dose-title">
       <div className="missed-dose__header">
@@ -20,15 +36,15 @@ export default function MissedDose() {
       </div>
 
       <ul className="missed-dose__list">
-        {missedDoses.map((dose) => (
-          <li key={`${dose.medicine}-${dose.day}`} className="missed-dose__item">
-            <span className="missed-dose__date">{dose.day}</span>
+        {missedDoses.length ? missedDoses.map((dose) => (
+          <li key={dose._id} className="missed-dose__item">
+            <span className="missed-dose__date">{formatDate(dose.scheduledDate)}</span>
             <div>
               <h3>{dose.medicine}</h3>
-              <p>{dose.dosage} · scheduled for {dose.time}</p>
+              <p>{dose.dosage} · scheduled for {formatTime(dose.scheduledTime)}</p>
             </div>
           </li>
-        ))}
+        )) : <li className="missed-dose__empty">No missed doses to show.</li>}
       </ul>
 
       <Link to="/calendar" className="missed-dose__more">

@@ -1,18 +1,32 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, CalendarDays } from "lucide-react";
 import "./missedDose.css";
 
-const weekDays = [
-  { day: "Mon", date: "31", doses: [{ medicine: "Amlodipine", time: "8:00 AM" }] },
-  { day: "Tue", date: "1", doses: [] },
-  { day: "Wed", date: "2", doses: [{ medicine: "Metformin", time: "8:00 AM" }] },
-  { day: "Thu", date: "3", doses: [] },
-  { day: "Fri", date: "4", doses: [] },
-  { day: "Sat", date: "5", doses: [] },
-  { day: "Sun", date: "6", doses: [{ medicine: "Vitamin D3", time: "9:00 PM" }] },
-];
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const weekDates = ["2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-06"];
+
+function formatTime(time) {
+  return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" })
+    .format(new Date(`1970-01-01T${time}:00`));
+}
 
 export default function MissedDoseCalendar() {
+  const [doses, setDoses] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/missed-doses?start=${weekDates[0]}&end=${weekDates.at(-1)}`)
+      .then((response) => response.ok ? response.json() : Promise.reject())
+      .then(setDoses)
+      .catch(() => setError("Unable to load missed doses. Start the backend and seed the test data."));
+  }, []);
+
+  const dosesByDate = doses.reduce((groups, dose) => {
+    (groups[dose.scheduledDate] ||= []).push(dose);
+    return groups;
+  }, {});
+
   return (
     <main className="missed-calendar">
       <div className="missed-calendar__topbar">
@@ -31,21 +45,24 @@ export default function MissedDoseCalendar() {
           <CalendarDays aria-hidden="true" />
         </div>
 
+        {error && <p className="missed-dose__empty">{error}</p>}
         <div className="missed-calendar__grid">
-          {weekDays.map(({ day, date, doses }) => (
-            <article className="calendar-day" key={day}>
+          {weekDates.map((date) => {
+            const dayDate = new Date(`${date}T00:00:00`);
+            const dayDoses = dosesByDate[date] || [];
+            return <article className="calendar-day" key={date}>
               <header>
-                <span>{day}</span>
-                <strong>{date}</strong>
+                <span>{new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(dayDate)}</span>
+                <strong>{dayDate.getDate()}</strong>
               </header>
-              {doses.length ? doses.map((dose) => (
-                <div className="calendar-dose" key={dose.medicine}>
+              {dayDoses.length ? dayDoses.map((dose) => (
+                <div className="calendar-dose" key={dose._id}>
                   <strong>{dose.medicine}</strong>
-                  <span>Missed · {dose.time}</span>
+                  <span>{dose.dosage} · Missed {formatTime(dose.scheduledTime)}</span>
                 </div>
               )) : <p className="calendar-day__empty">No missed doses</p>}
-            </article>
-          ))}
+            </article>;
+          })}
         </div>
       </section>
     </main>

@@ -67,6 +67,11 @@
   margin: 0;
 }
 
+.missed-dose__empty {
+  margin: 1rem 0;
+  color: var(--text-secondary);
+}
+
 .missed-dose__item h3 {
   color: var(--text-primary);
   font-size: 1rem;
