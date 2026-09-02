@@ -67,14 +67,28 @@
 @media (max-width: 600px) {
   .alarm {
     min-height: 220px;
+    padding: 1rem;
   }
-  .alarm input[type="time"] {
+
+  .alarm input[type="time"],
+  .tablet-count {
     width: 100%;
   }
-    .alarm p {
-        margin-top: 14px;
-        color: var(--text-secondary);
-        margin-top: 20px;
-        font-size: 1rem;
-    }
+
+  .alarm p {
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .alarm h2 {
+    margin-bottom: 1rem;
+  }
+
+  .alarm > button {
+    width: 100%;
+  }
 }

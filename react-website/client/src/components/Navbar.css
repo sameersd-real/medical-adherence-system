@@ -39,4 +39,30 @@
       .details-bar button:active {
           transform: scale(0.97);
       }
-/* second half */
+
+@media (max-width: 700px) {
+  .details-bar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .details-bar p:first-child {
+    flex-basis: 100%;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  .details-bar {
+    align-items: stretch;
+    padding: 0.75rem;
+  }
+
+  .details-bar p:first-child {
+    font-size: 1rem;
+  }
+
+  .details-bar button {
+    width: 100%;
+  }
+}
