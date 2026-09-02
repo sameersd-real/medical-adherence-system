@@ -1,0 +1,202 @@
+.missed-dose {
+  width: min(100%, var(--max-width));
+  margin: 1.5rem 0 0;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  background: rgba(12, 16, 32, 0.75);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+}
+
+.missed-dose__header,
+.missed-calendar__heading,
+.missed-calendar__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.missed-dose__eyebrow {
+  margin: 0 0 0.25rem;
+  color: var(--accent-teal);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.missed-dose h2,
+.missed-calendar h1 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.missed-dose__icon,
+.missed-calendar__heading > svg {
+  color: var(--accent-teal);
+}
+
+.missed-dose__list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.missed-dose__item {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.8fr) 2fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 42, 95, 0.07);
+  border: 1px solid rgba(255, 42, 95, 0.22);
+  border-radius: var(--border-radius-sm);
+}
+
+.missed-dose__date {
+  color: #ff8ca7;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.missed-dose__item h3,
+.missed-dose__item p {
+  margin: 0;
+}
+
+.missed-dose__item h3 {
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.missed-dose__item p,
+.missed-calendar__heading p,
+.calendar-day__empty {
+  color: var(--text-secondary);
+}
+
+.missed-dose__more,
+.missed-calendar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-teal);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.missed-dose__more:hover,
+.missed-calendar__back:hover {
+  color: var(--accent-blue);
+}
+
+.missed-calendar {
+  min-height: 100vh;
+  background: var(--bg-dark-primary);
+  color: var(--text-primary);
+}
+
+.missed-calendar__topbar {
+  padding: 1rem max(1.25rem, calc((100% - var(--max-width)) / 2));
+  background: rgba(12, 16, 32, 0.75);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.missed-calendar__content {
+  width: min(100% - 2.5rem, var(--max-width));
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.missed-calendar__heading {
+  margin-bottom: 1.5rem;
+}
+
+.missed-calendar__heading > svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.missed-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.calendar-day {
+  min-height: 11rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+}
+
+.calendar-day header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-day header span {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.calendar-day header strong {
+  color: var(--text-primary);
+  font-size: 1.4rem;
+}
+
+.calendar-dose {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem;
+  background: rgba(255, 42, 95, 0.1);
+  border-left: 3px solid var(--accent-red);
+  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+}
+
+.calendar-dose strong {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.calendar-dose span {
+  color: #ff8ca7;
+  font-size: 0.75rem;
+}
+
+.calendar-day__empty {
+  margin: 2.5rem 0 0;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .missed-calendar__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .missed-dose,
+  .missed-calendar__content {
+    width: calc(100% - 1.5rem);
+  }
+
+  .missed-dose__item {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .missed-calendar__content {
+    padding: 1.5rem 0;
+  }
+
+  .missed-calendar__grid {
+    grid-template-columns: 1fr;
+  }
+}
