@@ -1,14 +1,17 @@
 /* first half */
       .details-bar{
+        width: 100%;
+        box-sizing: border-box;
         display: flex;
         align-items: center;
         gap: 20px;
-        border-radius: 8px;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        padding: 8px;
+        border-radius: 5px;
+        background: rgba(12, 16, 32, 0.75);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 0.8rem 1rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        margin: 5px 0px;
+        margin: 0 0 2rem;
       }
       .details-bar p{
         margin: 0;
@@ -23,15 +26,15 @@
         border: none;
         border-radius: 6px;
         padding: 8px 16px;
-        background-color: var(--btn-color);
-        color: #242122;
+        background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+        color: var(--bg-dark-primary);
         font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
         transition: 0.2s ease;
       }
       .details-bar button:hover {
-        background-color: var(--btn-hover);
+        box-shadow: 0 4px 16px var(--accent-teal-glow);
       }
       .details-bar button:active {
           transform: scale(0.97);

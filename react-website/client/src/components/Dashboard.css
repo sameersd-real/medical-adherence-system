@@ -1,4 +1,12 @@
 .Dashboard {
+    width: 100%;
     min-height: 100vh;
-    /* background-color: var(--primary-color); */
+    padding: 0 0 2rem;
+    box-sizing: border-box;
+    background: var(--bg-dark-primary);
+    color: var(--text-primary);
+}
+
+.Dashboard nav {
+    width: 100%;
 }
