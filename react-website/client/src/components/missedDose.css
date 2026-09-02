@@ -237,3 +237,52 @@
     padding: 0.75rem;
   }
 }
+.missed-calendar__navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.missed-calendar__navigation button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 6.5rem;
+  padding: 0.6rem 0.9rem;
+
+  background: rgba(15, 23, 42, 0.65);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.missed-calendar__navigation button:hover {
+  background: rgba(20, 184, 166, 0.12);
+  border-color: var(--accent-teal);
+  color: var(--accent-teal);
+}
+
+.missed-calendar__navigation button:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 500px) {
+  .missed-calendar__navigation {
+    justify-content: stretch;
+  }
+
+  .missed-calendar__navigation button {
+    flex: 1;
+    min-width: 0;
+  }
+}
