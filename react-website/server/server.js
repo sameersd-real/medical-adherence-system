@@ -41,12 +41,12 @@ app.get("/", (req, res) => {
 
 app.post("/signup", async (req, res) => {
   try {
-    const { phone, password } = req.body;
+    const { name, phone, password } = req.body;
 
     // Check required fields
-    if (!phone || !password) {
+    if (!name ||!phone || !password) {
       return res.status(400).json({
-        message: "Phone and password are required.",
+        message: "Name, Phone and password are required.",
       });
     }
 
@@ -75,6 +75,7 @@ app.post("/signup", async (req, res) => {
 
     // Create user
     const user = await User.create({
+      name,
       phone,
       password,
     });
@@ -89,13 +90,49 @@ app.post("/signup", async (req, res) => {
 
   } catch (error) {
     console.error("Signup Error:", error);
-
+    
     res.status(500).json({
       message: "Failed to create account.",
     });
   }
 });
-
+// =================================
+// Login
+// =================================
+app.post("/login", async (req, res) => {
+  try {
+    const { phone, password } = req.body;
+    if (!phone || !password) {
+      return res.status(400).json({
+        message: "Phone and password are required"
+      });
+    }
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid phone number or password"
+      });
+    }
+    if (user.password !== password) {
+      return res.status(401).json({
+        message: "Invalid phone number or password"
+      });
+    }
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        phone: user.phone
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
+});
 // ================================
 // ADMIN - GET USERS - for fun 😏
 // ================================

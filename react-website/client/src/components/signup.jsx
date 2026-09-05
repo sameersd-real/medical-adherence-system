@@ -10,6 +10,7 @@ function Signup() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -45,6 +46,7 @@ function Signup() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          name,
           phone,
           password,
         }),
@@ -105,7 +107,20 @@ function Signup() {
             <UserPlus />
             Create Account
           </h2>
+          
+          <div className="signup-input-group">
 
+            <label>Phone Number</label>
+
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+
+          </div>
           <div className="signup-input-group">
 
             <label>Phone Number</label>
