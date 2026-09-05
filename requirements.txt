@@ -1,0 +1,30 @@
+## Software Requirements
+
+The website which includes 
+login,sign up page,dashboard,medicine schedulng,medication History,
+Missed Dose alerts,device status(battery,temp,et...) .,
+
+the login page includes phone number and password,.
+
+the dashboard contains medicine schedulng,medication History,Missed Dose alerts,device status(battery,temp) .
+
+the medicine schedule should contains four different timers in which we can set timer  .
+
+medication history page should contain number of tablets taken on time,after time,missed tablets.
+
+Missed dose alerts should be sent through whatsapp to the login phone number .
+
+
+## Hardware Requirements
+(ask voltage range before buying)
+ESP32
+LCD Display with I2C module
+RTC
+LED's x3              '
+resistors
+Speaker compatible with esp32
+Temperature sensor
+Medicine box
+Servo motors x3 (micro / nano / SG90)
+Hall Sensore x3
+Power Supply (3.3V & 5V ( its && not || ) batteries or cells qunatity unknown)
