@@ -42,6 +42,16 @@
   color: var(--text-primary);
   padding: 5px;
 }
+.tablet-name{
+  width: min(100%, 180px);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 10px;
+  outline: none;
+  color: var(--text-primary);
+  padding: 5px;
+}
 /* ON/OFF button */
 .alarm > button {
   padding: 8px 22px;

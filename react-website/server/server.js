@@ -26,6 +26,7 @@ mongoose
 // ================================
 const User = require("./models/User");
 const MissedDose = require("./models/MissedDose");
+const Alarm = require("./models/Alarm");
 // ================================
 // Home Route
 // ================================
@@ -189,6 +190,35 @@ app.get("/api/missed-doses", async (req, res) => {
   }
 });
 
+// ====================================
+// Save alarm time
+// ======================================================
+app.post("/api/alarms", async (req, res) => {
+    try {
+        const { userId, medicine, time, tablets } = req.body;
+
+        if (!userId || !time || !tablets) {
+            return res.status(400).json({
+                message: "All alarm fields are required"
+            });
+        }
+
+        const alarm = await Alarm.create({
+            userId,
+            medicine,
+            time,
+            tablets
+        });
+
+        res.status(201).json(alarm);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to create alarm"
+        });
+    }
+});
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
