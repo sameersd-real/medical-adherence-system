@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import './Alarm.css';
-function Alarm() {
-  const [alarmTime, setAlarmTime] = useState('');
-  const [enabled, setEnabled] = useState(false);
-  const [tabletCount, setTabletCount] = useState(1);
-  const [medicine, setMedicine] = useState('');
+function Alarm({ alarm }) {
+  const [alarmTime, setAlarmTime] = useState(alarm?.time || '');
+  const [enabled, setEnabled] = useState(alarm?.enabled || false);
+  const [tabletCount, setTabletCount] = useState(alarm?.tablets || 1);
+  const [medicine, setMedicine] = useState(alarm?.medicine || '');
 
   const saveAlarm = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -56,7 +56,14 @@ function Alarm() {
       saveAlarm();
     }
   };
-
+  useEffect(() => {
+      if (alarm) {
+          setAlarmTime(alarm.time);
+          setEnabled(alarm.enabled);
+          setTabletCount(alarm.tablets);
+          setMedicine(alarm.medicine);
+      }
+  }, [alarm]);
   return (
     <div className="alarm">
       <h2>Alarm</h2>
