@@ -6,6 +6,13 @@ const alarmSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    index: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 2
+    },
+
     medicine: {
         type: String,
         trim: true
@@ -24,5 +31,10 @@ const alarmSchema = new mongoose.Schema({
         default: true
     }
 });
+// One alarm slot per user
+alarmSchema.index(
+    { userId: 1, index: 1 },
+    { unique: true }
+);
 
 module.exports = mongoose.model("Alarm", alarmSchema);

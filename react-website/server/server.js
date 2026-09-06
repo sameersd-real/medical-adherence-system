@@ -195,30 +195,70 @@ app.get("/api/missed-doses", async (req, res) => {
 // ======================================================
 app.post("/api/alarms", async (req, res) => {
     try {
-        const { userId, medicine, time, tablets } = req.body;
+        const { userId, index, medicine, time, tablets } = req.body;
 
-        if (!userId || !time || !tablets) {
+        if (
+            !userId ||
+            index === undefined ||
+            !medicine ||
+            !time ||
+            tablets === undefined
+        ) {
             return res.status(400).json({
                 message: "All alarm fields are required"
             });
         }
 
-        const alarm = await Alarm.create({
-            userId,
-            medicine,
-            time,
-            tablets
-        });
+        if (index < 0 || index > 2) {
+            return res.status(400).json({
+                message: "Alarm index must be 0, 1, or 2"
+            });
+        }
 
-        res.status(201).json(alarm);
+        const alarm = await Alarm.findOneAndUpdate(
+            { userId, index },
+            {
+                userId,
+                index,
+                medicine,
+                time,
+                tablets: Number(tablets),
+                enabled: true
+            },
+            {
+                new: true,
+                upsert: true,
+                runValidators: true
+            }
+        );
+
+        res.status(200).json(alarm);
 
     } catch (error) {
-        console.error(error);
+        console.error("Save alarm error:", error);
+
         res.status(500).json({
-            message: "Failed to create alarm"
+            message: "Failed to save alarm"
         });
     }
 });
+app.get("/api/alarms/:userId", async (req, res) => {
+    try {
+        const alarms = await Alarm.find({
+            userId: req.params.userId
+        }).sort({ index: 1 });
+
+        res.json(alarms);
+
+    } catch (error) {
+        console.error("Get alarms error:", error);
+
+        res.status(500).json({
+            message: "Failed to get alarms"
+        });
+    }
+});
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
