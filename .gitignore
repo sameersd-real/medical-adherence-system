@@ -4,3 +4,5 @@ react-website/server/node_modules/
 react-website/client/.env
 react-website/server/.env
 testing/
+**/apikey.json
+react-website/google-vision-api/txt.txt
