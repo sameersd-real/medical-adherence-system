@@ -35,6 +35,18 @@
     --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+[data-theme="light"] {
+    /* Color Palette for Light Mode */
+    --bg-dark-primary: #f5f5f5;
+    --bg-dark-secondary: #e2e8f0;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --border-hover: rgba(33, 192, 99, 0.4);
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+}
+
 * {
     margin: 0;
     padding: 0;

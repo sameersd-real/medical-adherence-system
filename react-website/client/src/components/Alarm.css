@@ -25,7 +25,7 @@
   width: min(100%, 180px);
   padding: 10px 12px;
   margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--input-bg);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
@@ -35,7 +35,7 @@
 /* Tablet count */
 .tablet-count{
   width: min(100%, 180px);
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
   outline: none;
@@ -44,7 +44,7 @@
 }
 .tablet-name{
   width: min(100%, 180px);
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
   margin-bottom: 10px;

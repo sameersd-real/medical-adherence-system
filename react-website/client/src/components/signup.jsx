@@ -110,7 +110,7 @@ function Signup() {
           
           <div className="signup-input-group">
 
-            <label>Phone Number</label>
+            <label>Name</label>
 
             <input
               type="text"
