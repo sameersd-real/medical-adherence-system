@@ -24,10 +24,11 @@ function AlarmContainer() {
     }, []);
     return (
         <div className="alarm-container">
-            {[0, 1, 2].map((index) => (
+            {[0, 1, 2].map((idx) => (
                 <Alarm
-                    key={index}
-                    alarm={alarms[index] || null}
+                    key={idx}
+                    index={idx}
+                    alarm={alarms.find(a => a.index === idx) || null}
                 />  
             ))}
         </div>
