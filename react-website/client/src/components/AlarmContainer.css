@@ -7,7 +7,7 @@
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 1.25rem;
     border-radius: var(--border-radius-md);
-    background: rgba(12, 16, 32, 0.75);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
 }
 
