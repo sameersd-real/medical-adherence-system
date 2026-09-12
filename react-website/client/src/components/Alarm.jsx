@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import './Alarm.css';
-function Alarm({ alarm }) {
+function Alarm({ alarm, index }) {
   const [alarmTime, setAlarmTime] = useState(alarm?.time || '');
   const [enabled, setEnabled] = useState(alarm?.enabled || false);
   const [tabletCount, setTabletCount] = useState(alarm?.tablets || 1);
@@ -27,6 +27,7 @@ function Alarm({ alarm }) {
         },
         body: JSON.stringify({
           userId: user.id,
+          index:index,
           medicine,
           time: alarmTime,
           tablets: Number(tabletCount)

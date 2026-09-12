@@ -27,8 +27,9 @@ function AlarmContainer() {
             {[0, 1, 2].map((index) => (
                 <Alarm
                     key={index}
-                    alarm={alarms[index] || null}
-                />  
+                    index={index}
+                    alarm={alarms.find((alarm) => alarm.index === index) || null}
+                />
             ))}
         </div>
     );
