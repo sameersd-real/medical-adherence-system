@@ -45,6 +45,8 @@
     --text-primary: #0f172a;
     --text-secondary: #334155;
     --text-muted: #64748b;
+    .header {
+    background: rgba(245, 245, 245, 0.75);}
 }
 
 * {
@@ -900,7 +902,7 @@ p {
    FOOTER
    ========================================== */
 .footer {
-    background: #03050a;
+    background: var(--bg-dark-secondary);
     border-top: 1px solid var(--border-color);
     padding: 3rem 0;
 }
@@ -1048,4 +1050,38 @@ p {
     .quote-card, .vision-card {
         padding: 1.5rem;
     }
+}
+.theme-toggle {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    background: var(--bg-card);
+    color: var(--text-primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    stroke: var(--text-primary);
+    stroke-width: 2;
+}
+
+.theme-toggle:hover {
+    color: var(--accent-teal);
+    border-color: var(--border-hover);
+    transform: rotate(15deg) scale(1.05);
+}
+
+.theme-toggle:hover svg {
+    stroke: var(--accent-teal);
 }

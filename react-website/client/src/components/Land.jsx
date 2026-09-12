@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Activity,
   Target,
@@ -14,11 +14,22 @@ import {
   Quote,
   FolderGit2,
   Award,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./land.css";
 
 function Landing() {
+
+  const [lightMode, setLightMode] = useState(false);
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      lightMode ? "light" : "dark"
+    );
+  }, [lightMode]);
+
   useEffect(() => {
     const animElements = document.querySelectorAll(".animate-on-scroll");
     const observerOptions = {
@@ -81,7 +92,13 @@ function Landing() {
               About Project
             </a>
           </nav>
-
+          <button
+            className="theme-toggle"
+            onClick={() => setLightMode(!lightMode)}
+            aria-label="Toggle theme"
+          >
+            {lightMode ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
         </div>
       </header>
 
