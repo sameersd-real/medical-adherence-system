@@ -50,12 +50,50 @@ function Alarm({ alarm, index }) {
     }
   };
 
-  const toggleAlarm = () => {
-    if (enabled) {
-      setEnabled(false);
-    } else {
+  const toggleAlarm = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+  
+      if (!user) {
+          alert("Please login first");
+          return;
+      }
+    
+      // Turning OFF an existing alarm
+      if (enabled) {
+          try {
+              const response = await fetch(
+                  `http://localhost:5000/api/alarms/${user.id}/${index}`,
+                  {
+                      method: "PATCH",
+                      headers: {
+                          "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                          enabled: false
+                      })
+                  }
+              );
+            
+              const data = await response.json();
+            
+              if (!response.ok) {
+                  alert(data.message || "Failed to turn off alarm");
+                  return;
+              }
+            
+              setEnabled(false);
+              console.log("Alarm disabled:", data);
+            
+          } catch (error) {
+              console.error("Failed to disable alarm:", error);
+              alert("Unable to connect to server");
+          }
+        
+          return;
+      }
+    
+      // Turning ON / creating the alarm
       saveAlarm();
-    }
   };
   useEffect(() => {
       if (alarm) {

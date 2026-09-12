@@ -246,6 +246,42 @@ app.post("/api/alarms", async (req, res) => {
         });
     }
 });
+app.patch("/api/alarms/:userId/:index", async (req, res) => {
+    try {
+        const { userId, index } = req.params;
+        const { enabled } = req.body;
+
+        if (enabled === undefined) {
+            return res.status(400).json({
+                message: "Enabled value is required"
+            });
+        }
+
+        const alarm = await Alarm.findOneAndUpdate(
+            { userId, index: Number(index) },
+            { enabled: Boolean(enabled) },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!alarm) {
+            return res.status(404).json({
+                message: "Alarm not found"
+            });
+        }
+
+        res.json(alarm);
+
+    } catch (error) {
+        console.error("Update alarm status error:", error);
+
+        res.status(500).json({
+            message: "Failed to update alarm status"
+        });
+    }
+});
 app.get("/api/alarms/:userId", async (req, res) => {
     try {
         const alarms = await Alarm.find({
