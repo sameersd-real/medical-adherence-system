@@ -7,6 +7,7 @@ import Landing from './components/Land';
 import Signup from './components/signup';
 import MissedDoseCalendar from './components/MissedDoseCalendar';
 import SidebarMenu from './components/SidebarMenu';
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // A wrapper to hide SidebarMenu on login/signup/landing if desired, 
 // but the prompt just says "Create a hamburger icon in the top-left/top navigation area"
@@ -23,7 +24,14 @@ function AppContent() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+            path="/dashboard"
+            element={
+                <ProtectedRoute>
+                    <Dashboard />
+                </ProtectedRoute>
+            }
+        />
         <Route path="/calendar" element={<MissedDoseCalendar />} />
         <Route path='*' element={<NotFound/>}/>
       </Routes>
