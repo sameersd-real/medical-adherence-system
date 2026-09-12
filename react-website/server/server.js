@@ -12,6 +12,10 @@ app.use(express.json());
 
 app.use(express.static("../client"));
 
+// Routes import
+const medicalHistoryRoutes = require("./routes/medicalHistoryRoutes");
+//using routes
+app.use("/api/medical-history", medicalHistoryRoutes);
 
 // ================================
 // MongoDB Connection

@@ -8,6 +8,7 @@ import Signup from './components/signup';
 import MissedDoseCalendar from './components/MissedDoseCalendar';
 import SidebarMenu from './components/SidebarMenu';
 import ProtectedRoute from "./components/ProtectedRoute";
+import MedicalHistory from "./components/MedicalHistory";
 
 // A wrapper to hide SidebarMenu on login/signup/landing if desired, 
 // but the prompt just says "Create a hamburger icon in the top-left/top navigation area"
@@ -29,6 +30,14 @@ function AppContent() {
             element={
                 <ProtectedRoute>
                     <Dashboard />
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/medical-history"
+            element={
+                <ProtectedRoute>
+                    <MedicalHistory />
                 </ProtectedRoute>
             }
         />
