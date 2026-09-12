@@ -54,11 +54,11 @@ export default function SidebarMenu() {
   };
 
   const topMenuItems = [
+    { name: 'Dashboard', icon: <Pill size={20} />, path: '/dashboard' },
     { name: 'OCR Reader', icon: <ScanText size={20} />, path: '/ocr-reader' },
     { name: 'Medical History', icon: <Clipboard size={20} />, path: '/medical-history' },
-    { name: 'Missed Doses', icon: <Pill size={20} />, path: '/dashboard' },
     { name: 'Calendar', icon: <Calendar size={20} />, path: '/calendar' },
-    { name: 'Antigravity', icon: <Sparkles size={20} />, path: '/antigravity' },
+    { name: 'AI Overview', icon: <Sparkles size={20} />, path: '/ai-overview' },
   ];
 
   return (
