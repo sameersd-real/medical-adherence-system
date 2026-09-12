@@ -6,3 +6,4 @@ react-website/server/.env
 testing/
 **/apikey.json
 react-website/google-vision-api/txt.txt
+react-website/google-vision-api/
