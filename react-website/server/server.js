@@ -14,9 +14,10 @@ app.use(express.static("../client"));
 
 // Routes import
 const medicalHistoryRoutes = require("./routes/medicalHistoryRoutes");
+const ocrReaderRoutes = require("./routes/ocrReaderRoutes");
 //using routes
 app.use("/api/medical-history", medicalHistoryRoutes);
-
+app.use("/api/ocr-reader", ocrReaderRoutes);
 // ================================
 // MongoDB Connection
 // ================================
