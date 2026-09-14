@@ -1,4 +1,6 @@
 const { chromium } = require("playwright");
+const fs = require("fs");
+const path = require("path");
 
 (async () => {
     const imagePath = process.argv[2];
@@ -31,26 +33,54 @@ const { chromium } = require("playwright");
     // ================================
     // UPLOAD IMAGE
     // ================================
-
     console.error("4. Looking for file input...");
-
+    
     const fileInput = page.locator('input[type="file"]').first();
-
+    
     await fileInput.waitFor({
         state: "attached",
         timeout: 30000
     });
-
+    
     console.error("5. File input found");
-
-    console.error("6. Uploading:", imagePath);
-
-    await fileInput.setInputFiles(imagePath);
-
-    console.error("7. IMAGE UPLOADED");
-
+    
+    // Make sure the file actually exists
+    const fs = require("fs");
+    
+    if (!fs.existsSync(imagePath)) {
+        throw new Error(`Image does not exist: ${imagePath}`);
+    }
+    
+    console.error("6. Image exists:", imagePath);
+    
+    // Give ChatGPT a moment to finish initializing
     await page.waitForTimeout(2000);
-
+    
+    console.error("7. Uploading image...");
+    
+    await fileInput.setInputFiles({
+        name: path.basename(imagePath),
+        mimeType: "image/png",
+        buffer: fs.readFileSync(imagePath)
+    });
+    
+    console.error("8. File selected in ChatGPT");
+    
+    // Wait for ChatGPT's upload indicator to disappear
+    try {
+        await page.locator('[aria-label^="Uploading "]').waitFor({
+            state: "detached",
+            timeout: 30000
+        });
+    
+        console.error("9. ChatGPT finished uploading image");
+    } catch {
+        console.error(
+            "9. Upload indicator not detected/disappeared; continuing..."
+        );
+    }
+    
+    await page.waitForTimeout(1000);
     // ================================
     // MESSAGE BOX
     // ================================
