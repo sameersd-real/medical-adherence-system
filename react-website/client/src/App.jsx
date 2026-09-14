@@ -42,7 +42,7 @@ function AppContent() {
                 </ProtectedRoute>
             }
         />
-        <Route path="/ocr-reader" element={<OCR />} />
+        <Route path="/ocrreader" element={<OCR />} />
         <Route path="/calendar" element={<MissedDoseCalendar />} />
         <Route path='*' element={<NotFound/>}/>
       </Routes>

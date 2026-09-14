@@ -1,62 +1,88 @@
 const { chromium } = require("playwright");
-const path = require("path");
 
 (async () => {
-    console.log("1. Starting Edge...");
+    const imagePath = process.argv[2];
+
+    if (!imagePath) {
+        console.error("No image path provided.");
+        process.exit(1);
+    }
+
+    console.error("1. Starting Edge...");
 
     const browser = await chromium.launch({
-        headless: false,
-        channel: "msedge"
+        channel: "msedge",
+        headless: false
     });
 
-    const context = await browser.newContext();
-    const page = await context.newPage();
+    const page = await browser.newPage();
 
-    console.log("2. Opening ChatGPT...");
+    console.error("2. Opening ChatGPT...");
 
     await page.goto("https://chatgpt.com/", {
         waitUntil: "domcontentloaded"
     });
 
-    console.log("3. ChatGPT loaded");
-    console.log("URL:", page.url());
-
-    // Give ChatGPT time to load
     await page.waitForTimeout(3000);
 
-    console.log("4. Looking for file input...");
+    console.error("3. ChatGPT loaded");
+    console.error("URL:", page.url());
+
+    // ================================
+    // UPLOAD IMAGE
+    // ================================
+
+    console.error("4. Looking for file input...");
 
     const fileInput = page.locator('input[type="file"]').first();
 
     await fileInput.waitFor({
         state: "attached",
-        timeout: 15000
+        timeout: 30000
     });
 
-    console.log("5. File input found");
+    console.error("5. File input found");
 
-    const imagePath = path.join(__dirname, "prescription.png");
-
-    console.log("6. Uploading:", imagePath);
+    console.error("6. Uploading:", imagePath);
 
     await fileInput.setInputFiles(imagePath);
 
-    console.log("7. IMAGE UPLOADED");
+    console.error("7. IMAGE UPLOADED");
+
+    await page.waitForTimeout(2000);
+
+    // ================================
+    // MESSAGE BOX
+    // ================================
+
+    console.error("8. Looking for message box...");
+
+    const textbox = page.getByRole("textbox", {
+        name: "Chat with ChatGPT"
+    });
+
+    await textbox.waitFor({
+        state: "visible",
+        timeout: 30000
+    });
+
+    console.error("9. Message box found!");
+
+    // ================================
+    // PROMPT
+    // ================================
 
     const prompt = `
-Analyze the prescription image.
+Analyze the uploaded prescription image.
 
-Extract every medicine you can identify.
+Extract every medicine that is clearly visible.
 
-For each medicine, give:
-- medicine name
-- strength/dosage
-- quantity
-- frequency
-- timing
-- instructions
+Return ONLY valid JSON.
+Do not use markdown.
+Do not include explanations.
+Do not guess missing information.
 
-Return ONLY valid JSON:
+Use exactly this structure:
 
 {
   "medicines": [
@@ -71,99 +97,98 @@ Return ONLY valid JSON:
   ]
 }
 
-If something cannot be determined from the image, use an empty string.
-Do not guess.
-Only return information that is actually visible in the image.
+Rules:
+- Only include medicines actually visible in the image.
+- If a field cannot be read, use an empty string.
+- Do not infer or invent information.
 `;
-
-   console.log("8. Looking for message box...");
-
-    const textbox = page.getByRole("textbox", {
-        name: "Chat with ChatGPT"
-    });
-
-    await textbox.waitFor({
-        state: "visible",
-        timeout: 15000
-    });
-
-    console.log("9. Message box found!");
 
     await textbox.fill(prompt);
 
-    console.log("10. Prompt entered!");
+    console.error("10. Prompt entered!");
+
+    // ================================
+    // SEND
+    // ================================
 
     const form = page.locator('form[data-has-attachments]');
+
+    await form.waitFor({
+        state: "attached",
+        timeout: 30000
+    });
+
+    console.error("11. Sending prompt...");
 
     await form.evaluate(form => {
         form.requestSubmit();
     });
 
-    console.log("11. Prompt automatically submitted!");
+    console.error("12. Prompt sent!");
 
-    console.log("12. Waiting for ChatGPT response...");
-    
-    const response = page.locator(
-        '[data-assistant-markdown]'
-    ).last();
-    
+    // ================================
+    // WAIT FOR RESPONSE
+    // ================================
+
+    const response = page
+        .locator('[data-assistant-markdown]')
+        .last();
+
     await response.waitFor({
         state: "visible",
         timeout: 60000
     });
-    
-    console.log("13. Response started streaming...");
-    
+
+    console.error("13. Waiting for response...");
+
     let previousText = "";
     let stableCount = 0;
-    
+
     while (stableCount < 3) {
-    
         const currentText = await response.innerText();
-    
-        console.log("Current response length:", currentText.length);
-    
+
         if (currentText === previousText) {
             stableCount++;
         } else {
             stableCount = 0;
             previousText = currentText;
         }
-    
+
         await page.waitForTimeout(1000);
     }
-    
+
     const responseText = previousText.trim();
-    
-    console.log("14. Response finished!");
-    
-    console.log("\n========== CHATGPT RESPONSE ==========");
-    console.log(responseText);
-    console.log("======================================");
-    
+
+    console.error("14. Response received:");
+    console.error(responseText);
+
+    // ================================
+    // PARSE JSON
+    // ================================
+
     let result;
-    
+
     try {
-    
         result = JSON.parse(responseText);
-    
-        console.log("15. Valid JSON received!");
-    
-        console.log(
-            JSON.stringify(result, null, 2)
-        );
-    
     } catch (error) {
-    
-        console.log("❌ Invalid JSON");
-    
-        console.log(
-            "Raw response:",
-            responseText
-        );
+        console.error("Failed to parse ChatGPT response as JSON.");
+        console.error(responseText);
+
+        await browser.close();
+        process.exit(1);
     }
 
-    await page.pause();
+    // ================================
+    // SEND ONLY JSON TO SERVER
+    // ================================
+
+    process.stdout.write(JSON.stringify(result));
 
     await browser.close();
-})();
+
+})().catch(error => {
+    console.error("PLAYWRIGHT FATAL ERROR:");
+    console.error(error);
+
+    process.exit(1);
+});
