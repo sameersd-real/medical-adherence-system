@@ -1,18 +1,40 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./login.css";
 
 function Login() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    console.log("Phone:", phone);
-    console.log("Password:", password);
-
-    // Login logic goes here
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          phone,
+          password
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+      // Save logged-in user
+      localStorage.setItem("user", JSON.stringify(data.user));
+      // Go to dashboard
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      alert("Unable to connect to server");
+    }
   };
 
   return (
@@ -24,7 +46,7 @@ function Login() {
           </h1>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleLogin}>
           <h3 id="sing">Sign in with your phone number</h3>
 
           <input

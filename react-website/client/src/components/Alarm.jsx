@@ -1,12 +1,120 @@
-import { useState } from 'react';
-import './Alarm.css'
-function Alarm() {
-  const [alarmTime, setAlarmTime] = useState('');
-  const [enabled, setEnabled] = useState(false);
-  const [tabletCount, setTabletCount] = useState('');
+import { useEffect, useState } from "react";
+import './Alarm.css';
+function Alarm({ alarm, index }) {
+  const [alarmTime, setAlarmTime] = useState(alarm?.time || '');
+  const [enabled, setEnabled] = useState(alarm?.enabled || false);
+  const [tabletCount, setTabletCount] = useState(alarm?.tablets || 1);
+  const [medicine, setMedicine] = useState(alarm?.medicine || '');
+
+  const saveAlarm = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user) {
+      alert('Please login first');
+      return;
+    }
+
+    if (!medicine || !alarmTime || !tabletCount) {
+      alert('Please fill all alarm details');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/alarms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          index:index,
+          medicine,
+          time: alarmTime,
+          tablets: Number(tabletCount)
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      setEnabled(true);
+      console.log('Alarm saved:', data);
+      alert('Alarm saved!');
+    } catch (error) {
+      console.error(error);
+      alert('Unable to connect to server');
+    }
+  };
+
+  const toggleAlarm = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+  
+      if (!user) {
+          alert("Please login first");
+          return;
+      }
+    
+      // Turning OFF an existing alarm
+      if (enabled) {
+          try {
+              const response = await fetch(
+                  `http://localhost:5000/api/alarms/${user.id}/${index}`,
+                  {
+                      method: "PATCH",
+                      headers: {
+                          "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                          enabled: false
+                      })
+                  }
+              );
+            
+              const data = await response.json();
+            
+              if (!response.ok) {
+                  alert(data.message || "Failed to turn off alarm");
+                  return;
+              }
+            
+              setEnabled(false);
+              console.log("Alarm disabled:", data);
+            
+          } catch (error) {
+              console.error("Failed to disable alarm:", error);
+              alert("Unable to connect to server");
+          }
+        
+          return;
+      }
+    
+      // Turning ON / creating the alarm
+      saveAlarm();
+  };
+  useEffect(() => {
+      if (alarm) {
+          setAlarmTime(alarm.time);
+          setEnabled(alarm.enabled);
+          setTabletCount(alarm.tablets);
+          setMedicine(alarm.medicine);
+      }
+  }, [alarm]);
   return (
     <div className="alarm">
       <h2>Alarm</h2>
+
+      <input
+        type="text"
+        className='tablet-name'
+        placeholder="Medicine name"
+        value={medicine}
+        onChange={(e) => setMedicine(e.target.value)}
+      />
+
       <input
         type="time"
         value={alarmTime}
@@ -15,7 +123,7 @@ function Alarm() {
       <input
         type="number"
         min="1"
-        className='tablet-count'
+        className="tablet-count"
         placeholder="No. of tablets"
         value={tabletCount}
         onChange={(e) => setTabletCount(e.target.value)}
@@ -26,7 +134,8 @@ function Alarm() {
           {tabletCount > 1 ? 's' : ''}
         </p>
       )}
-      <button onClick={() => setEnabled(!enabled)}>
+
+      <button onClick={toggleAlarm}>
         {enabled ? 'OFF' : 'ON'}
       </button>
     </div>

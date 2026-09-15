@@ -1,24 +1,9 @@
-/* Reset */
-* {
+/* Login page only: do not alter shared form or page styles. */
+.login-page,
+.login-page * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-/* Page */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
 }
 
 .login-page {
@@ -65,7 +50,7 @@ body,
 }
 
 /* Form */
-form {
+.login-container form {
     padding: 50px 45px;
 
     display: flex;
@@ -74,7 +59,7 @@ form {
 }
 
 /* Heading */
-#sing {
+.login-container #sing {
     font-size: 28px;
     color: #1d3f45;
     text-align: center;
@@ -115,7 +100,7 @@ form {
 }
 
 /* Placeholder */
-input::placeholder {
+.login-container input::placeholder {
     font-family: "Times New Roman", Times, serif;
     font-size: 17px;
     color: white;
@@ -154,19 +139,19 @@ input::placeholder {
 }
 
 /* Signup link */
-form p {
+.login-container form p {
     margin-top: 25px;
     color: #555;
     font-size: 15px;
 }
 
-form p a {
+.login-container form p a {
     color: var(--primary-color);
     font-weight: bold;
     text-decoration: none;
 }
 
-form p a:hover {
+.login-container form p a:hover {
     text-decoration: underline;
 }
 
@@ -186,7 +171,7 @@ form p a:hover {
         font-size: 21px;
     }
 
-    form {
+    .login-container form {
         padding: 35px 25px;
     }
 
@@ -197,7 +182,7 @@ form p a:hover {
 
     .sec,
     .thi,
-    button {
+    .login-container button {
         max-width: 100%;
     }
 }
