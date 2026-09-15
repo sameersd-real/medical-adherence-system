@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Upload a medical document and extract readable text." />
+    <title>Scan a medical document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="ocr.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">DOCUMENT OCR</p>
+          <h1>Scan a medical document</h1>
+          <p class="subtitle">Upload an image and extract readable text.</p>
+        </div>
+        <div class="secure-badge" aria-label="Secure upload">
+          <span class="lock-dot" aria-hidden="true">⌁</span>
+          Secure upload
+        </div>
+      </header>
+
+      <section class="upload-card" aria-labelledby="upload-heading">
+        <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-describedby="upload-help">
+          <input id="file-input" class="file-input" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" capture="environment" />
+          <div class="camera-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M14 15.5h4.2l2.3-3.5h7l2.3 3.5H34a5 5 0 0 1 5 5v11a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5v-11a5 5 0 0 1 5-5Z" />
+              <circle cx="24" cy="26" r="6.5" />
+              <circle class="lens-dot" cx="34.5" cy="20.5" r="1.5" />
+            </svg>
+          </div>
+          <h2 id="upload-heading">Drop your medical document here</h2>
+          <p id="upload-help">PNG, JPG, WEBP or PDF <span aria-hidden="true">·</span> Maximum 10 MB</p>
+          <button class="choose-button" type="button" id="choose-button">Choose file</button>
+          <p class="mobile-hint">Tap to take a photo or select a file</p>
+        </div>
+        <p class="file-status" id="file-status" aria-live="polite">No file selected</p>
+      </section>
+
+      <section class="workspace-grid">
+        <article class="panel preview-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">SOURCE</p>
+              <h2>Document preview</h2>
+            </div>
+            <span class="panel-state" id="preview-state">Waiting</span>
+          </div>
+          <div class="preview-frame" id="preview-frame">
+            <div class="empty-preview" id="empty-preview">
+              <div class="paper-icon" aria-hidden="true">▧</div>
+              <p>Your uploaded document appears here</p>
+            </div>
+            <img id="preview-image" alt="Uploaded medical document preview" />
+          </div>
+        </article>
+
+        <article class="panel text-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">OUTPUT</p>
+              <h2>Extracted text</h2>
+            </div>
+            <span class="panel-state">Ready</span>
+          </div>
+          <textarea id="extracted-text" placeholder="Extracted medical text will appear here...&#10;&#10;Example: Patient name, medicine, dosage, test values"></textarea>
+          <div class="action-row">
+            <button class="primary-button" id="extract-button" type="button">Extract text</button>
+            <button class="secondary-button" id="copy-button" type="button">Copy</button>
+            <button class="secondary-button" id="download-button" type="button">Download</button>
+          </div>
+          <p class="action-status" id="action-status" aria-live="polite"></p>
+        </article>
+      </section>
+
+      <footer class="page-footer">Your documents stay private and are processed securely.</footer>
+    </main>
+
+    <script>
+      const fileInput = document.getElementById('file-input');
+      const dropZone = document.getElementById('drop-zone');
+      const chooseButton = document.getElementById('choose-button');
+      const fileStatus = document.getElementById('file-status');
+      const previewImage = document.getElementById('preview-image');
+      const emptyPreview = document.getElementById('empty-preview');
+      const previewState = document.getElementById('preview-state');
+      const textArea = document.getElementById('extracted-text');
+      const actionStatus = document.getElementById('action-status');
+
+      function showFile(file) {
+        if (!file) return;
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+          fileStatus.textContent = 'That file is larger than 10 MB.';
+          fileStatus.classList.add('error');
+          return;
+        }
+        fileStatus.classList.remove('error');
+        fileStatus.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+        previewState.textContent = 'Uploaded';
+        previewState.classList.add('is-ready');
+
+        if (file.type.startsWith('image/')) {
+          previewImage.src = URL.createObjectURL(file);
+          previewImage.hidden = false;
+          emptyPreview.hidden = true;
+        } else {
+          previewImage.hidden = true;
+          emptyPreview.hidden = false;
+          emptyPreview.querySelector('p').textContent = 'PDF uploaded — preview available after extraction';
+        }
+      }
+
+      chooseButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        fileInput.click();
+      });
+      dropZone.addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') fileInput.click();
+      });
+      fileInput.addEventListener('change', () => showFile(fileInput.files[0]));
+      ['dragenter', 'dragover'].forEach((eventName) => dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.add('is-dragging');
+      }));
+      ['dragleave', 'drop'].forEach((eventName) => dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.remove('is-dragging');
+      }));
+      dropZone.addEventListener('drop', (event) => showFile(event.dataTransfer.files[0]));
+
+      document.getElementById('extract-button').addEventListener('click', () => {
+        actionStatus.textContent = fileInput.files[0] ? 'Document queued for text extraction.' : 'Choose a document first.';
+      });
+      document.getElementById('copy-button').addEventListener('click', async () => {
+        if (!textArea.value) { actionStatus.textContent = 'There is no extracted text to copy.'; return; }
+        await navigator.clipboard.writeText(textArea.value);
+        actionStatus.textContent = 'Extracted text copied.';
+      });
+      document.getElementById('download-button').addEventListener('click', () => {
+        if (!textArea.value) { actionStatus.textContent = 'There is no extracted text to download.'; return; }
+        const blob = new Blob([textArea.value], { type: 'text/plain' });
+        const link = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'extracted-medical-text.txt' });
+        link.click();
+        URL.revokeObjectURL(link.href);
+        actionStatus.textContent = 'Text downloaded.';
+      });
+    </script>
+  </body>
+</html>
