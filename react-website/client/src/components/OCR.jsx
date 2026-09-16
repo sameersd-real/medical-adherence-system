@@ -232,46 +232,6 @@ export default function OCR() {
 
                 </section>
             )}
-
-            <section className="ocr-info">
-
-                <div className="info-item">
-                    <div className="info-number">01</div>
-
-                    <div>
-                        <h3>Upload</h3>
-                        <p>Add a clear image of your prescription.</p>
-                    </div>
-                </div>
-
-                <div className="info-line"></div>
-
-                <div className="info-item">
-                    <div className="info-number">02</div>
-
-                    <div>
-                        <h3>Scan</h3>
-                        <p>
-                            MedAdhere identifies the medicine details.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="info-line"></div>
-
-                <div className="info-item">
-                    <div className="info-number">03</div>
-
-                    <div>
-                        <h3>Review</h3>
-                        <p>
-                            Check the extracted information before saving.
-                        </p>
-                    </div>
-                </div>
-
-            </section>
-
         </div>
     );
 }

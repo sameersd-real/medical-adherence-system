@@ -9,7 +9,8 @@ import MissedDoseCalendar from './components/MissedDoseCalendar';
 import SidebarMenu from './components/SidebarMenu';
 import ProtectedRoute from "./components/ProtectedRoute";
 import MedicalHistory from "./components/MedicalHistory";
-import OCR from "./components/OCR";
+import OCRold from "./components/OCR";
+import OCR from "./components/OCR2";
 
 // A wrapper to hide SidebarMenu on login/signup/landing if desired, 
 // but the prompt just says "Create a hamburger icon in the top-left/top navigation area"
@@ -42,6 +43,7 @@ function AppContent() {
                 </ProtectedRoute>
             }
         />
+        <Route path="/ocrreader-old" element={<OCRold />} />
         <Route path="/ocrreader" element={<OCR />} />
         <Route path="/calendar" element={<MissedDoseCalendar />} />
         <Route path='*' element={<NotFound/>}/>

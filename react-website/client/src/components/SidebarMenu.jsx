@@ -55,7 +55,7 @@ export default function SidebarMenu() {
 
   const topMenuItems = [
     { name: 'Dashboard', icon: <Pill size={20} />, path: '/dashboard' },
-    { name: 'OCR Reader', icon: <ScanText size={20} />, path: '/ocr-reader' },
+    { name: 'OCR Reader', icon: <ScanText size={20} />, path: '/ocrreader' },
     { name: 'Medical History', icon: <Clipboard size={20} />, path: '/medical-history' },
     { name: 'Calendar', icon: <Calendar size={20} />, path: '/calendar' },
     { name: 'AI Overview', icon: <Sparkles size={20} />, path: '/ai-overview' },

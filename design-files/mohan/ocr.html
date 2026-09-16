@@ -18,10 +18,6 @@
           <h1>Scan a medical document</h1>
           <p class="subtitle">Upload an image and extract readable text.</p>
         </div>
-        <div class="secure-badge" aria-label="Secure upload">
-          <span class="lock-dot" aria-hidden="true">⌁</span>
-          Secure upload
-        </div>
       </header>
 
       <section class="upload-card" aria-labelledby="upload-heading">
@@ -68,17 +64,27 @@
             </div>
             <span class="panel-state">Ready</span>
           </div>
-          <textarea id="extracted-text" placeholder="Extracted medical text will appear here...&#10;&#10;Example: Patient name, medicine, dosage, test values"></textarea>
-          <div class="action-row">
-            <button class="primary-button" id="extract-button" type="button">Extract text</button>
-            <button class="secondary-button" id="copy-button" type="button">Copy</button>
-            <button class="secondary-button" id="download-button" type="button">Download</button>
+          <div class="medicine-result">
+              <h3>medicine name:</h3>
+              <p>
+                  <strong>Strength:</strong>
+              </p>
+              <p>
+                  <strong>Quantity:</strong>
+              </p>
+              <p>
+                  <strong>Frequency:</strong>
+              </p>
+              <p>
+                  <strong>Timing:</strong>
+              </p>
+              <p>
+                  <strong>Instructions:</strong>
+              </p>
           </div>
-          <p class="action-status" id="action-status" aria-live="polite"></p>
+          <p class="action-status" id="action-status" aria-live="polite">ready to extract</p>
         </article>
       </section>
-
-      <footer class="page-footer">Your documents stay private and are processed securely.</footer>
     </main>
 
     <script>
