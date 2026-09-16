@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import "./missedDose.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -17,7 +24,6 @@ function getMonday(date) {
   const result = new Date(date);
   const day = result.getDay();
 
-  // Sunday = 0, Monday = 1
   const diff = day === 0 ? -6 : 1 - day;
 
   result.setDate(result.getDate() + diff);
@@ -57,8 +63,13 @@ function formatWeekRange(startDate, endDate) {
 }
 
 export default function MissedDoseCalendar() {
-  const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
-  const [doses, setDoses] = useState([]);
+  const [weekStart, setWeekStart] = useState(() =>
+    getMonday(new Date())
+  );
+
+  const [missedDoses, setMissedDoses] = useState([]);
+  const [takenDoses, setTakenDoses] = useState([]);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -72,15 +83,34 @@ export default function MissedDoseCalendar() {
     setLoading(true);
     setError("");
 
-    fetch(`${API_URL}/api/missed-doses?start=${start}&end=${end}`)
-      .then((response) =>
-        response.ok ? response.json() : Promise.reject()
-      )
-      .then(setDoses)
+    Promise.all([
+      fetch(
+        `${API_URL}/api/missed-doses?start=${start}&end=${end}`
+      ),
+      fetch(
+        `${API_URL}/api/taken-doses?start=${start}&end=${end}`
+      ),
+    ])
+      .then(async ([missedResponse, takenResponse]) => {
+        if (!missedResponse.ok || !takenResponse.ok) {
+          throw new Error("Failed to fetch dose history");
+        }
+
+        const missed = await missedResponse.json();
+        const taken = await takenResponse.json();
+
+        return { missed, taken };
+      })
+      .then(({ missed, taken }) => {
+        setMissedDoses(missed);
+        setTakenDoses(taken);
+      })
       .catch(() => {
-        setDoses([]);
+        setMissedDoses([]);
+        setTakenDoses([]);
+
         setError(
-          "Unable to load missed doses. Can't connect to server."
+          "Unable to load medication history. Can't connect to server."
         );
       })
       .finally(() => {
@@ -88,7 +118,12 @@ export default function MissedDoseCalendar() {
       });
   }, [weekStart]);
 
-  const dosesByDate = doses.reduce((groups, dose) => {
+  const missedByDate = missedDoses.reduce((groups, dose) => {
+    (groups[dose.scheduledDate] ||= []).push(dose);
+    return groups;
+  }, {});
+
+  const takenByDate = takenDoses.reduce((groups, dose) => {
     (groups[dose.scheduledDate] ||= []).push(dose);
     return groups;
   }, {});
@@ -120,9 +155,11 @@ export default function MissedDoseCalendar() {
       >
         <div className="missed-calendar__heading">
           <div>
-            <p className="missed-dose__eyebrow">Medication history</p>
+            <p className="missed-dose__eyebrow">
+              Medication history
+            </p>
 
-            <h1 id="calendar-title">Missed doses</h1>
+            <h1 id="calendar-title">Medication History</h1>
 
             <p>{formatWeekRange(weekStart, weekEnd)}</p>
           </div>
@@ -154,42 +191,95 @@ export default function MissedDoseCalendar() {
           </button>
         </div>
 
-        {error && <p className="missed-dose__empty">{error}</p>}
+        {error && (
+          <p className="missed-dose__empty">
+            {error}
+          </p>
+        )}
 
         {loading && !error && (
-          <p className="missed-dose__empty">Loading missed doses...</p>
+          <p className="missed-dose__empty">
+            Loading medication history...
+          </p>
         )}
 
         <div className="missed-calendar__grid">
           {weekDates.map((date) => {
             const dateString = formatDate(date);
-            const dayDoses = dosesByDate[dateString] || [];
+
+            const dayMissedDoses =
+              missedByDate[dateString] || [];
+
+            const dayTakenDoses =
+              takenByDate[dateString] || [];
+
+            const hasDoses =
+              dayMissedDoses.length > 0 ||
+              dayTakenDoses.length > 0;
 
             const weekday = new Intl.DateTimeFormat("en-US", {
               weekday: "short",
             }).format(date);
 
             return (
-              <article className="calendar-day" key={dateString}>
+              <article
+                className="calendar-day"
+                key={dateString}
+              >
                 <header>
                   <span>{weekday}</span>
                   <strong>{date.getDate()}</strong>
                 </header>
 
-                {dayDoses.length ? (
-                  dayDoses.map((dose) => (
-                    <div className="calendar-dose" key={dose._id}>
-                      <strong>{dose.medicine}</strong>
+                {hasDoses ? (
+                  <>
+                    {/* TAKEN DOSES */}
+                    {dayTakenDoses.map((dose) => (
+                      <div
+                        className="calendar-dose taken-dose-calendar"
+                        key={`taken-${dose._id}`}
+                      >
+                        <div>
+                          <CheckCircle
+                            size={16}
+                            aria-hidden="true"
+                          />
 
-                      <span>
-                        {dose.dosage} · Missed{" "}
-                        {formatTime(dose.scheduledTime)}
-                      </span>
-                    </div>
-                  ))
+                          <strong>{dose.medicine}</strong>
+                        </div>
+
+                        <span>
+                          {dose.dosage} · Taken{" "}
+                          {formatTime(dose.takenTime)}
+                        </span>
+                      </div>
+                    ))}
+
+                    {/* MISSED DOSES */}
+                    {dayMissedDoses.map((dose) => (
+                      <div
+                        className="calendar-dose missed-dose-calendar"
+                        key={`missed-${dose._id}`}
+                      >
+                        <div>
+                          <AlertCircle
+                            size={16}
+                            aria-hidden="true"
+                          />
+
+                          <strong>{dose.medicine}</strong>
+                        </div>
+
+                        <span>
+                          {dose.dosage} · Missed{" "}
+                          {formatTime(dose.scheduledTime)}
+                        </span>
+                      </div>
+                    ))}
+                  </>
                 ) : (
                   <p className="calendar-day__empty">
-                    No missed doses
+                    No medication records
                   </p>
                 )}
               </article>

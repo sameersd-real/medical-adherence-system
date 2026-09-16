@@ -1,0 +1,128 @@
+.taken-dose {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--panel-bg);
+  color: var(--text-color);
+}
+
+.taken-dose__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.taken-dose__eyebrow {
+  margin: 0 0 4px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.taken-dose__header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.taken-dose__icon {
+  width: 22px;
+  height: 22px;
+  color: var(--primary-color);
+}
+
+.taken-dose__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.taken-dose__item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.taken-dose__item:last-child {
+  border-bottom: none;
+}
+
+.taken-dose__date {
+  min-width: 58px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.taken-dose__item h3 {
+  margin: 0 0 4px;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.taken-dose__item p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.taken-dose__empty {
+  padding: 20px 0;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.taken-dose__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  color: var(--btn-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.taken-dose__more:hover {
+  color: var(--btn-hover);
+}
+
+@media (max-width: 700px) {
+  .taken-dose {
+    padding: 18px;
+  }
+
+  .taken-dose__item {
+    gap: 12px;
+  }
+
+  .taken-dose__date {
+    min-width: 52px;
+  }
+}
+
+.taken-dose-calendar {
+  border-left: 3px solid var(--primary-color);
+}
+
+.missed-dose-calendar {
+  border-left: 3px solid #ef4444;
+}
+
+.calendar-dose > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

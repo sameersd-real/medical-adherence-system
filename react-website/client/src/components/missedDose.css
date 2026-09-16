@@ -286,3 +286,16 @@
     min-width: 0;
   }
 }
+.taken-dose-calendar {
+  background: rgba(33, 192, 99, 0.15);
+  border-left: 3px solid var(--primary-color);
+  color: var(--text-color);
+}
+
+.taken-dose-calendar strong {
+  color: var(--text-color);
+}
+
+.taken-dose-calendar span {
+  color: var(--text-muted);
+}

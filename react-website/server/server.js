@@ -31,6 +31,7 @@ mongoose
 // ================================
 const User = require("./models/User");
 const MissedDose = require("./models/MissedDose");
+const TakenDose = require("./models/TakenDose");
 const Alarm = require("./models/Alarm");
 // ================================
 // Home Route
@@ -156,7 +157,101 @@ app.get("/api/admin/users", async (req, res) => {
     });
   }
 });
+// ================================
+// TAKEN DOSES
+// ================================
 
+app.get("/api/taken-doses", async (req, res) => {
+  try {
+    const { start, end, limit } = req.query;
+
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+    if (
+      (start && !datePattern.test(start)) ||
+      (end && !datePattern.test(end))
+    ) {
+      return res.status(400).json({
+        message: "Dates must use YYYY-MM-DD format.",
+      });
+    }
+
+    if (start && end && start > end) {
+      return res.status(400).json({
+        message: "start must be on or before end.",
+      });
+    }
+
+    const query = {};
+
+    if (start || end) {
+      query.scheduledDate = {};
+
+      if (start) query.scheduledDate.$gte = start;
+      if (end) query.scheduledDate.$lte = end;
+    }
+
+    const parsedLimit = Number.parseInt(limit, 10);
+
+    const dosesQuery = TakenDose.find(query).sort({
+      scheduledDate: -1,
+      takenTime: -1,
+    });
+
+    if (Number.isInteger(parsedLimit) && parsedLimit > 0) {
+      dosesQuery.limit(Math.min(parsedLimit, 100));
+    }
+
+    const doses = await dosesQuery.lean();
+
+    res.json(doses);
+  } catch (error) {
+    console.error("Get taken doses error:", error);
+
+    res.status(500).json({
+      message: "Failed to get taken doses.",
+    });
+  }
+});
+app.post("/api/taken-doses", async (req, res) => {
+  try {
+    const {
+      medicine,
+      dosage,
+      scheduledDate,
+      scheduledTime,
+      takenTime,
+    } = req.body;
+
+    if (
+      !medicine ||
+      !dosage ||
+      !scheduledDate ||
+      !scheduledTime ||
+      !takenTime
+    ) {
+      return res.status(400).json({
+        message: "All taken-dose fields are required.",
+      });
+    }
+
+    const takenDose = await TakenDose.create({
+      medicine,
+      dosage,
+      scheduledDate,
+      scheduledTime,
+      takenTime,
+    });
+
+    res.status(201).json(takenDose);
+  } catch (error) {
+    console.error("Save taken dose error:", error);
+
+    res.status(500).json({
+      message: "Failed to save taken dose.",
+    });
+  }
+});
 // ================================
 // MISSED DOSES
 // ================================

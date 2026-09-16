@@ -2,6 +2,7 @@ import { useState } from "react";
 import AlarmContainer from "./AlarmContainer";
 import AlarmScheduler from "./AlarmScheduler";
 import MissedDose from "./missedDose";
+import TakenDose from "./takenDose";
 import Navbar from "./Navbar";
 import "./Dashboard.css";
 export default function Dashboard(){
@@ -12,6 +13,7 @@ export default function Dashboard(){
             <AlarmScheduler />
             <AlarmContainer />
             <MissedDose />
+            <TakenDose />
         </div>
     );
 }
