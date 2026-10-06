@@ -59,7 +59,7 @@ export default function MedicalHistory() {
     const fetchMedicalHistory = async (userId) => {
         try {
             const response = await fetch(
-                `http://localhost:5000/api/medical-history/${userId}`
+                `http://localhost:3000/api/medical-history/${userId}`
             );
 
             const data = await response.json();
@@ -171,7 +171,7 @@ export default function MedicalHistory() {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/medical-history/${user.id}`,
+                `http://localhost:3000/api/medical-history/${user.id}`,
                 {
                     method: "PUT",
                     headers: {

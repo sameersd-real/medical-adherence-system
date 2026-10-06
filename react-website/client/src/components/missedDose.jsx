@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AlertCircle, ChevronRight } from "lucide-react";
 import "./missedDose.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 function formatDate(date) {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" })

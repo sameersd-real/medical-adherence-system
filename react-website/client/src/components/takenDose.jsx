@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { CheckCircle, ChevronRight } from "lucide-react";
 import "./takenDose.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 function formatDate(date) {
   return new Intl.DateTimeFormat("en-US", {

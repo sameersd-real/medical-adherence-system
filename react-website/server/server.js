@@ -3,7 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const URI = process.env.MONGO_URI;
 
 // Middleware
@@ -15,16 +15,23 @@ app.use(express.static("../client"));
 // Routes import
 const medicalHistoryRoutes = require("./routes/medicalHistoryRoutes");
 const ocrReaderRoutes = require("./routes/ocrReaderRoutes");
+const { espRouter, startMissedDoseWatcher } = require("./esp");
+
 //using routes
 app.use("/api/medical-history", medicalHistoryRoutes);
 app.use("/api/ocr-reader", ocrReaderRoutes);
+app.use("/api/esp", espRouter);
+
 // ================================
 // MongoDB Connection
 // ================================
 
 mongoose
   .connect(URI)
-  .then(() => console.log("MongoDB Connected"))
+  .then(() => {
+    console.log("MongoDB Connected");
+    startMissedDoseWatcher();
+  })
   .catch((err) => console.log("MongoDB Connection Error:", err));
 // ================================
 // User Model
@@ -287,6 +294,32 @@ app.get("/api/missed-doses", async (req, res) => {
   } catch (error) {
     console.error("Get missed doses error:", error);
     res.status(500).json({ message: "Failed to get missed doses." });
+  }
+});
+
+app.post("/api/missed-doses", async (req, res) => {
+  try {
+    const { medicine, dosage, scheduledDate, scheduledTime } = req.body;
+
+    if (!medicine || !dosage || !scheduledDate || !scheduledTime) {
+      return res.status(400).json({
+        message: "All missed-dose fields are required.",
+      });
+    }
+
+    const missedDose = await MissedDose.create({
+      medicine,
+      dosage,
+      scheduledDate,
+      scheduledTime,
+    });
+
+    res.status(201).json(missedDose);
+  } catch (error) {
+    console.error("Save missed dose error:", error);
+    res.status(500).json({
+      message: "Failed to save missed dose.",
+    });
   }
 });
 

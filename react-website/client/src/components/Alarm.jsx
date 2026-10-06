@@ -20,7 +20,7 @@ function Alarm({ alarm, index }) {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/alarms', {
+      const response = await fetch('http://localhost:3000/api/alarms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ function Alarm({ alarm, index }) {
       if (enabled) {
           try {
               const response = await fetch(
-                  `http://localhost:5000/api/alarms/${user.id}/${index}`,
+                  `http://localhost:3000/api/alarms/${user.id}/${index}`,
                   {
                       method: "PATCH",
                       headers: {

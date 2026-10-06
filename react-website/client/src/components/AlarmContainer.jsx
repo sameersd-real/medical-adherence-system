@@ -10,7 +10,7 @@ function AlarmContainer() {
             if (!user) return;
             try {
                 const response = await fetch(
-                    `http://localhost:5000/api/alarms/${user.id}`
+                    `http://localhost:3000/api/alarms/${user.id}`
                 );
                 const data = await response.json();
                 if (response.ok) {
