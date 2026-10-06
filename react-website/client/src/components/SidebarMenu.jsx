@@ -103,14 +103,14 @@ export default function SidebarMenu() {
           <ul className="menu-list">
             <li>
               <button 
-                className={`menu-item ${location.pathname === '/download-settings' ? 'active' : ''}`}
-                onClick={() => handleNavigation('/download-settings')}
+                className={`menu-item ${location.pathname === '/download-history' ? 'active' : ''}`}
+                onClick={() => handleNavigation('/download-history')}
               >
                 <span className="menu-icon">
                   <Download size={18} style={{ marginRight: '-8px', marginBottom: '-4px' }} />
                   <Settings size={20} />
                 </span>
-                <span className="menu-text">Download Settings</span>
+                <span className="menu-text">Download Medical History</span>
               </button>
             </li>
             <li>
