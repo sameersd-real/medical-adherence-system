@@ -29,7 +29,7 @@ export default function OCR() {
             formData.append("image", file);
                     
             const response = await fetch(
-                "http://localhost:5000/api/ocr-reader",
+                "http://localhost:3000/api/ocr-reader",
                 {
                     method: "POST",
                     body: formData

@@ -75,7 +75,7 @@ export default function AlarmScheduler() {
             const user = JSON.parse(storedUser);
 
             const response = await fetch(
-                `http://localhost:5000/api/alarms/${user.id}`
+                `http://localhost:3000/api/alarms/${user.id}`
             );
 
             if (!response.ok) {
