@@ -4,6 +4,9 @@ const Alarm = require("../models/Alarm");
 const TakenDose = require("../models/TakenDose");
 const MissedDose = require("../models/MissedDose");
 
+const User = require("../models/User");
+const { sendSMS } = require("../smsService");
+
 const router = express.Router();
 
 /**
@@ -170,7 +173,21 @@ router.post("/:id/taken", async (req, res) => {
       });
 
       console.log(`[ESP32 Integration] Medicine confirmation (2nd button press) for schedule ${id}: ${schedule.medicine} taken at ${currentTime}`);
-
+      // Send SMS after medicine is recorded as taken
+      try {
+        const user = await User.findById(schedule.userId);
+      
+        if (user && user.phone) {
+          await sendSMS(
+            user.phone,
+            "SMAS: Your medicine has been marked as taken successfully."
+          );
+        } else {
+          console.log("[SMS] No phone number found for this user.");
+        }
+      } catch (smsError) {
+        console.error("[SMS] Failed to send SMS:", smsError.message);
+      }
       return res.status(200).json({
         message: "Medicine completion recorded successfully.",
         status: "success",
