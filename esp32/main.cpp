@@ -7,11 +7,13 @@
  * Buttons: 26, 27, 14
  * Servos:  13, 18, 19
  * Snooze:   4
- * Speaker: 23 (transistor-controlled KEY1)
+ * Speaker key 1: 23 
  * SDA:     21
  * SCL:     22
  *
  * DFPlayer RX/TX are disconnected.
+ * 
+ * lcd and rtc share sda and scl pins
  */
 
 #include <WiFi.h>
@@ -23,17 +25,24 @@
 #include <LiquidCrystal_I2C.h>
 
 // ---------- WiFi and Backend ----------
-const char* WIFI_NAME = "Sameer.2";
-const char* WIFI_PASSWORD = "password";
+const char* WIFI_NAME = "U Got No Net Homie";
+const char* WIFI_PASSWORD = "adhi1226";
 
-const char* API_BASE = "http://192.168.29.3:3000";
-const char* USER_ID = "6ad4ab397eec8c0d40e091b4";
+const char* API_BASE = "http://10.139.249.236:3000";
+const char* USER_ID = "6ad707ca8c8363dd1e07e13b";
 const char* DEVICE_ID = "ESP32_001";
 
 // ---------- Hardware Pins ----------
 const int ledPins[3] = {32, 33, 25};
 const int buttonPins[3] = {26, 27, 14};
 const int servoPins[3] = {13, 18, 19};
+
+// Servo positions per compartment.
+// Servo 1: open=90, close=0
+// Servos 2 and 3 are reversed mechanically: open=0, close=90.
+// Adjust these values if your physical mechanism needs different angles.
+const int SERVO_OPEN_ANGLES[3]  = {90, 0, 0};
+const int SERVO_CLOSE_ANGLES[3] = {0, 90, 90};
 
 const int snoozeButtonPin = 4;
 const int speakerKeyPin = 23;
@@ -334,7 +343,7 @@ void pollAlarms() {
       slotOpened[index] = true;
 
       digitalWrite(ledPins[index], LOW);
-      servos[index].write(90);
+      servos[index].write(SERVO_OPEN_ANGLES[index]);
 
       Serial.printf(
         "Compartment %d opened on backend\n",
@@ -370,7 +379,7 @@ void pollAlarms() {
       speakerTriggeredBefore[i] = false;
       lastSpeakerTrigger[i] = 0;
 
-      servos[i].write(0);
+      servos[i].write(SERVO_CLOSE_ANGLES[i]);
     }
   }
 }
@@ -389,7 +398,7 @@ void handleButton(int slot) {
     // First press: open compartment.
     stopSpeakerTriggerForSlot(slot);
 
-    servos[slot].write(90);
+    servos[slot].write(SERVO_OPEN_ANGLES[slot]);
     digitalWrite(ledPins[slot], LOW);
 
     if (postEvent(slot, "opened")) {
@@ -402,7 +411,7 @@ void handleButton(int slot) {
       );
     }
     else {
-      servos[slot].write(0);
+      servos[slot].write(SERVO_CLOSE_ANGLES[slot]);
       digitalWrite(ledPins[slot], HIGH);
       alarmActive[slot] = true;
     }
@@ -411,7 +420,7 @@ void handleButton(int slot) {
     // Second press: confirm medicine taken.
     stopSpeakerTriggerForSlot(slot);
 
-    servos[slot].write(0);
+    servos[slot].write(SERVO_CLOSE_ANGLES[slot]);
 
     if (postEvent(slot, "taken")) {
       slotOpened[slot] = false;
@@ -430,7 +439,7 @@ void handleButton(int slot) {
       );
     }
     else {
-      servos[slot].write(90);
+      servos[slot].write(SERVO_OPEN_ANGLES[slot]);
     }
   }
 }
@@ -542,7 +551,7 @@ void setup() {
 
     servos[i].setPeriodHertz(50);
     servos[i].attach(servoPins[i], 500, 2400);
-    servos[i].write(0);
+    servos[i].write(SERVO_CLOSE_ANGLES[i]);
   }
 
   // Snooze button connects GPIO 4 to GND.
