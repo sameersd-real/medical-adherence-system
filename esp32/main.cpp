@@ -25,10 +25,10 @@
 #include <LiquidCrystal_I2C.h>
 
 // ---------- WiFi and Backend ----------
-const char* WIFI_NAME = "U Got No Net Homie";
-const char* WIFI_PASSWORD = "adhi1226";
+const char* WIFI_NAME = "motoedge";
+const char* WIFI_PASSWORD = "12345678";
 
-const char* API_BASE = "http://10.139.249.236:3000";
+const char* API_BASE = "http://10.227.184.236:3000";
 const char* USER_ID = "6ad707ca8c8363dd1e07e13b";
 const char* DEVICE_ID = "ESP32_001";
 
