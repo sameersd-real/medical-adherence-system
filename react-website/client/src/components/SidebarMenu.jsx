@@ -58,7 +58,7 @@ export default function SidebarMenu() {
     { name: 'OCR Reader', icon: <ScanText size={20} />, path: '/ocrreader' },
     { name: 'Medical History', icon: <Clipboard size={20} />, path: '/medical-history' },
     { name: 'Calendar', icon: <Calendar size={20} />, path: '/calendar' },
-    { name: 'AI Overview', icon: <Sparkles size={20} />, path: '/ai-overview' },
+    { name: 'Refill', icon: <Sparkles size={20} />, path: '/refill' },
   ];
 
   return (

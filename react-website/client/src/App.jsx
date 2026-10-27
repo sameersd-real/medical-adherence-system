@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import MedicalHistory from "./components/MedicalHistory";
 import OCRold from "./components/OCR";
 import OCR from "./components/OCR2";
+import Refill from "./components/Refill"
 
 // A wrapper to hide SidebarMenu on login/signup/landing if desired, 
 // but the prompt just says "Create a hamburger icon in the top-left/top navigation area"
@@ -46,6 +47,7 @@ function AppContent() {
         <Route path="/ocrreader-old" element={<OCRold />} />
         <Route path="/ocrreader" element={<OCR />} />
         <Route path="/calendar" element={<MissedDoseCalendar />} />
+        <Route path="/refill" element={<Refill />} />
         <Route path='*' element={<NotFound/>}/>
       </Routes>
     </>
