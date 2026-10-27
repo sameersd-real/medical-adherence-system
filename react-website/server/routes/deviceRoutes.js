@@ -6,6 +6,16 @@ const MissedDose = require("../models/MissedDose");
 
 const router = express.Router();
 
+
+// ============================================================
+// REFILL MODE
+// ============================================================
+const refillStates = new Map();
+function getRefillKey(deviceId, userId) {
+    return `${deviceId}:${userId}`;
+}
+
+
 const MISSED_THRESHOLD_MINUTES = 15;
 
 /**
@@ -207,15 +217,133 @@ async function getNextDueReminder({ deviceId, userId } = {}) {
   return null;
 }
 
+// ============================================================
+// START REFILL MODE
+// POST /api/device/refill/start
+// ============================================================
+
+router.post("/refill/start", async (req, res) => {
+    try {
+        const { deviceId, userId } = req.body;
+
+        if (!deviceId || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: "deviceId and userId are required"
+            });
+        }
+
+        const key = getRefillKey(deviceId, userId);
+
+        // Prevent starting a refill if a dose is due
+        // or a compartment is already open.
+        const activeAlarm = await Alarm.findOne({
+            deviceId,
+            userId,
+            enabled: true,
+            status: { $in: ["due", "opened"] }
+        });
+
+        if (activeAlarm) {
+            return res.status(409).json({
+                success: false,
+                message:
+                    "Cannot start refill while a medication alarm is due or a compartment is open."
+            });
+        }
+
+        // Do not reset the original start time if a
+        // repeated request arrives during an active refill.
+        if (refillStates.get(key)?.active) {
+            return res.json({
+                success: true,
+                refillMode: "active",
+                message: "Refill mode is already active"
+            });
+        }
+
+        refillStates.set(key, {
+            active: true,
+            startedAt: new Date()
+        });
+
+        return res.json({
+            success: true,
+            refillMode: "active",
+            message: "Refill mode activated"
+        });
+    } catch (error) {
+        console.error("Start refill error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to start refill mode"
+        });
+    }
+});
+// ============================================================
+// FINISH REFILL MODE
+// POST /api/device/refill/finish
+// ============================================================
+router.post("/refill/finish", (req, res) => {
+    try {
+        const { deviceId, userId } = req.body;
+
+        if (!deviceId || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: "deviceId and userId are required"
+            });
+        }
+        const key = getRefillKey(deviceId, userId);
+        refillStates.delete(key);
+        return res.json({
+            success: true,
+            refillMode: "inactive",
+            message: "Refill mode deactivated"
+        });
+    } catch (error) {
+        console.error("Finish refill error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to finish refill mode"
+        });
+    }
+});
 
 router.get("/commands", async (req, res) => {
   try {
     const { deviceId, userId } = req.query;
-
     if (!deviceId || !userId) {
       return res.status(400).json({
         message: "deviceId and userId are required"
       });
+    }
+    // ============================================================
+    // REFILL MODE: PAUSE NORMAL ALARM COMMANDS
+    // ============================================================
+      
+    const refillKey = getRefillKey(deviceId, userId);
+    const refillState = refillStates.get(refillKey);
+      
+    if (refillState?.active) {
+        return res.json([
+            {
+                command: "REFILL",
+                status: "active",
+                index: 0
+            },
+            {
+                command: "REFILL",
+                status: "active",
+                index: 1
+            },
+            {
+                command: "REFILL",
+                status: "active",
+                index: 2
+            }
+        ]);
     }
 
     const now = new Date();

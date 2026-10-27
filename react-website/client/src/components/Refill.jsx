@@ -1,19 +1,70 @@
 
 import { useState } from "react";
 
+const API_BASE = "http://localhost:3000/api/device";
+const DEVICE_ID = "ESP32_001";
+const USER_ID = "6ad707ca8c8363dd1e07e13b";
+
 export default function Refill() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [message, setMessage] = useState("");
+  const [refillActive, setRefillActive] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleRefill = async () => {
+  const sendRefillRequest = async (action) => {
+    setLoading(true);
     setMessage("");
-    setShowConfirm(false);
 
-    // Backend integration will be added after
-    // checking your existing Node.js API.
-    setMessage(
-      "Backend connection is not configured yet."
-    );
+    try {
+      const response = await fetch(
+        `${API_BASE}/refill/${action}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            deviceId: DEVICE_ID,
+            userId: USER_ID,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message || "Request failed."
+        );
+      }
+
+      if (action === "start") {
+        setRefillActive(true);
+        setMessage(
+          "Refill mode activated. All compartments have been commanded to open."
+        );
+      } else {
+        setRefillActive(false);
+        setMessage(
+          "Refill mode deactivated. All compartments have been commanded to close."
+        );
+      }
+    } catch (error) {
+      setMessage(
+        `Error: ${error.message}. Check that the backend is running and accessible.`
+      );
+    } finally {
+      setLoading(false);
+      setShowConfirm(false);
+    }
+  };
+
+  const handleRefill = () => {
+    sendRefillRequest("start");
+  };
+
+  const handleCloseAll = () => {
+    sendRefillRequest("finish");
   };
 
   return (
@@ -30,13 +81,12 @@ export default function Refill() {
 
         <div className="compartment-list">
           {[1, 2, 3].map((number) => (
-            <div
-              className="compartment"
-              key={number}
-            >
+            <div className="compartment" key={number}>
               <span>Compartment {number}</span>
               <span className="status">
-                Ready for refill
+                {refillActive
+                  ? "Refill mode active"
+                  : "Ready for refill"}
               </span>
             </div>
           ))}
@@ -45,13 +95,26 @@ export default function Refill() {
         <button
           className="refill-button"
           onClick={() => setShowConfirm(true)}
+          disabled={loading || refillActive}
         >
-          Open All Compartments
+          {loading && !refillActive
+            ? "Opening..."
+            : "Open All Compartments"}
+        </button>
+
+        <button
+          className="close-button"
+          onClick={handleCloseAll}
+          disabled={loading || !refillActive}
+        >
+          {loading && refillActive
+            ? "Processing..."
+            : "Close All Compartments"}
         </button>
 
         <p className="refill-note">
           Make sure the medicine box is in a safe
-          position before opening.
+          position before opening or closing it.
         </p>
 
         {showConfirm && (
@@ -67,6 +130,7 @@ export default function Refill() {
               <button
                 className="cancel-button"
                 onClick={() => setShowConfirm(false)}
+                disabled={loading}
               >
                 Cancel
               </button>
@@ -74,8 +138,9 @@ export default function Refill() {
               <button
                 className="confirm-button"
                 onClick={handleRefill}
+                disabled={loading}
               >
-                Confirm
+                {loading ? "Opening..." : "Confirm"}
               </button>
             </div>
           </div>
@@ -106,8 +171,7 @@ export default function Refill() {
           padding: 32px;
           background: white;
           border-radius: 18px;
-          box-shadow: 0 8px 30px
-            rgba(0, 0, 0, 0.08);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
           box-sizing: border-box;
         }
 
@@ -152,21 +216,40 @@ export default function Refill() {
         }
 
         .refill-button,
-        .confirm-button {
+        .confirm-button,
+        .close-button {
           width: 100%;
           padding: 14px;
           border: none;
           border-radius: 9px;
-          background: #2563eb;
           color: white;
           font-size: 15px;
           font-weight: 600;
           cursor: pointer;
         }
 
-        .refill-button:hover,
-        .confirm-button:hover {
+        .refill-button,
+        .confirm-button {
+          background: #2563eb;
+        }
+
+        .refill-button:hover:not(:disabled),
+        .confirm-button:hover:not(:disabled) {
           background: #1d4ed8;
+        }
+
+        .close-button {
+          margin-top: 12px;
+          background: #dc2626;
+        }
+
+        .close-button:hover:not(:disabled) {
+          background: #b91c1c;
+        }
+
+        button:disabled {
+          opacity: 0.55;
+          cursor: not-allowed;
         }
 
         .refill-note {
@@ -211,9 +294,10 @@ export default function Refill() {
 
         .refill-message {
           margin-top: 18px;
-          color: #b45309;
+          color: #334155;
           font-size: 14px;
           line-height: 1.5;
+          overflow-wrap: anywhere;
         }
 
         @media (max-width: 480px) {

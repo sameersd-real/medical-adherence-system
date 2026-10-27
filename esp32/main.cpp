@@ -53,6 +53,7 @@ const unsigned long SPEAKER_REPEAT_MS = 5000;
 
 unsigned long lastSpeakerTrigger[3] = {0, 0, 0};
 bool speakerTriggeredBefore[3] = {false, false, false};
+bool refillMode = false;
 
 bool speakerPulseActive = false;
 unsigned long speakerPulseStartedAt = 0;
@@ -237,6 +238,10 @@ bool postSnooze(int slot) {
 
 // ---------- Snooze Button ----------
 void handleSnoozeButton() {
+  if (refillMode) {
+    Serial.println("Button ignored: refill mode active");
+    return;
+  }
   bool foundAlarm = false;
   bool snoozedAlarm = false;
 
@@ -267,6 +272,7 @@ void handleSnoozeButton() {
 }
 
 // ---------- Fetch Alarms from Backend ----------
+
 void pollAlarms() {
   if (WiFi.status() != WL_CONNECTED) {
     return;
@@ -284,9 +290,7 @@ void pollAlarms() {
 
   if (code != 200) {
     Serial.printf("Alarm fetch failed: HTTP %d\n", code);
-    Serial.println("Requested URL: " + url);
     Serial.println("Server response: " + http.getString());
-
     http.end();
     return;
   }
@@ -304,9 +308,65 @@ void pollAlarms() {
     return;
   }
 
-  bool seen[3] = {false, false, false};
-
   JsonArray commands = doc.as<JsonArray>();
+
+  // Check whether the backend has activated refill mode.
+  bool refillRequested = false;
+
+  for (JsonObject command : commands) {
+    String commandType = command["command"] | "";
+    String status = command["status"] | "";
+
+    if (commandType == "REFILL" && status == "active") {
+      refillRequested = true;
+      break;
+    }
+  }
+
+  // Refill mode: open all three compartments and
+  // prevent normal medication actions.
+  if (refillRequested) {
+    refillMode = true;
+
+    for (int i = 0; i < 3; i++) {
+      stopSpeakerTriggerForSlot(i);
+
+      alarmActive[i] = false;
+      slotOpened[i] = false;
+      alarmIds[i] = "";
+
+      digitalWrite(ledPins[i], LOW);
+      servos[i].write(SERVO_OPEN_ANGLES[i]);
+    }
+
+    Serial.println("REFILL MODE ACTIVE: All compartments open");
+    return;
+  }
+
+  // Refill mode has ended: close all compartments
+  // and reset temporary local state.
+  if (refillMode) {
+    refillMode = false;
+
+    for (int i = 0; i < 3; i++) {
+      stopSpeakerTriggerForSlot(i);
+
+      alarmActive[i] = false;
+      slotOpened[i] = false;
+      alarmIds[i] = "";
+
+      speakerTriggeredBefore[i] = false;
+      lastSpeakerTrigger[i] = 0;
+
+      digitalWrite(ledPins[i], LOW);
+      servos[i].write(SERVO_CLOSE_ANGLES[i]);
+    }
+
+    Serial.println("REFILL MODE ENDED: Compartments closed");
+  }
+
+  // Normal medication alarm processing resumes here.
+  bool seen[3] = {false, false, false};
 
   for (JsonObject alarm : commands) {
     int index = alarm["index"] | -1;
@@ -386,6 +446,10 @@ void pollAlarms() {
 
 // ---------- Compartment Button ----------
 void handleButton(int slot) {
+  if (refillMode) {
+    Serial.println("Button ignored: refill mode active");
+    return;
+  }
   if (alarmIds[slot].length() == 0) {
     Serial.printf(
       "No active alarm for compartment %d\n",
